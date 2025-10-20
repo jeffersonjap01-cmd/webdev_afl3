@@ -1,0 +1,139 @@
+/* ✅ Global Typography and Background */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #F9FBF7; /* light creamy matcha tone */
+    color: #2e2e2e;
+    font-size: 1rem;
+    line-height: 1.7;
+    letter-spacing: 0.3px;
+}
+
+/* ✅ Navbar - soft matcha gradient */
+nav {
+    background: linear-gradient(90deg, #A8E6A1 0%, #7FD46F 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+nav a {
+    color: #184d2e !important;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: #fff !important;
+}
+
+/* ✅ Hero Section */
+.hero {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 140px 20px;
+    position: relative;
+    color: #ffffff;
+}
+
+.hero h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    color: #ffffff;
+}
+
+.hero p {
+    max-width: 700px;
+    margin: 15px auto 0;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: #e8f5e9;
+}
+
+/* ✅ CTA Button */
+.btn-hero {
+    background-color: #7FD46F;
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-hero:hover {
+    background-color: #66BB6A;
+    color: white;
+}
+
+/* ✅ Section Title */
+.section-title {
+    font-weight: 700;
+    color: #184d2e;
+    margin-bottom: 40px;
+}
+
+/* ✅ Product Card */
+.product-card img {
+    overflow: hidden;         /* prevents image overflow */
+    height: auto;             /* let content define height */
+    display: flex;
+    flex-direction: column;
+}
+
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.product-card h5 {
+    color: #184d2e;
+}
+
+/* ✅ Matcha Background Accent Section */
+.matcha-section {
+    background: linear-gradient(180deg, #F0FAEE 0%, #E5F6E0 100%);
+    padding: 60px 0;
+    border-radius: 20px;
+}
+
+/* ✅ Footer */
+.footer {
+    background: #DFF4D8;
+    color: #184d2e;
+    padding: 60px 0;
+}
+
+.footer h5 {
+    font-weight: 600;
+    color: #184d2e;
+}
+
+.footer a {
+    color: #184d2e;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    .hero {
+        min-height: 50vh;
+        background-position: center top;
+        padding: 100px 20px;
+    }
+    .hero h1 {
+        font-size: 2rem;
+    }
+    .hero p {
+        font-size: 1rem;
+    }
+}
