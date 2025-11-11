@@ -6,29 +6,31 @@
     {{-- 🌿 Hero Section --}}
     <section class="hero" 
         style="background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('{{ asset('images/matcha_header.jpg') }}');">
-        <div class="container px-3 text-center">
-            <h1>Welcome to <span class="text-success">Alvca Matcha</span></h1>
+        <div class="max-w-6xl mx-auto text-center px-4">
+            <h1>Welcome to <span>Alvca Matcha</span></h1>
             <p>Discover the fresh, authentic taste of matcha with our handcrafted drinks and treats.</p>
+            <button class="btn-hero mt-4">Shop Now</button>
         </div>
     </section>
 
-    {{-- 🪴 Product Section --}}
-    <div class="container my-5 py-4">
-        <div class="row g-4">
-            @foreach($menus as $menu)
-                <div class="menu col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm">
+    {{-- 🍵 Product Section --}}
+    <section class="my-5 py-4 matcha-section">
+        <div class="max-w-6xl mx-auto text-center px-4">
+            <h2 class="section-title">Our Products</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach($menus as $menu)
+                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm transition-transform duration-300">
                         <img src="{{ asset('images/' . $menu->gambar) }}" 
-                             alt="{{ $menu->nama }}"
-                             class="card-img-top"
-                             style="height: 250px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">{{ $menu->nama }}</h5>
-                            <p class="card-text">{{ $menu->deskripsi }}</p>
+                             alt="{{ $menu->nama }}" 
+                             class="w-full h-64 object-cover">
+                        <div class="p-4 text-left">
+                            <h5 class="text-lg font-semibold mb-2">{{ $menu->nama }}</h5>
+                            <p class="text-gray-700 text-sm">{{ $menu->deskripsi }}</p>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
-    </div>
+    </section>
 @endsection

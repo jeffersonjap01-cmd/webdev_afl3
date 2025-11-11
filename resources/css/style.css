@@ -1,3 +1,4 @@
+@import "tailwindcss";
 /* ✅ Global Typography and Background */
 body {
     font-family: 'Poppins', sans-serif;
@@ -15,12 +16,12 @@ nav {
 }
 
 nav a {
-    color: #184d2e !important;
+    color: #fff;
     font-weight: 500;
 }
 
 nav a:hover {
-    color: #fff !important;
+    color: #fff;
 }
 
 /* ✅ Hero Section */

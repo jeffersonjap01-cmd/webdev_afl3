@@ -1,16 +1,13 @@
-<nav class="navbar navbar-expand-lg py-3">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-white" href="#">ALVCA MATCHA</a>
-        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon text-white"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav gap-3">
-                <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="/products" class="nav-link">Products</a></li>
-                <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="/contact" class="nav-link">Contact</a></li>
-            </ul>
-        </div>
+<nav class="py-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <a href="#" class="font-bold text-2xl text-white tracking-wide mb-2">
+            ALVCA MATCHA
+        </a>
+        <ul class="flex space-x-6">
+            <li><a href="/" class=" font-medium hover:text-[#184d2e] transition-colors">Home</a></li>
+            <li><a href="/products" class=" font-medium hover:text-[#184d2e] transition-colors">Products</a></li>
+            <li><a href="/about" class=" font-medium hover:text-[#184d2e] transition-colors">About</a></li>
+            <li><a href="/contact" class=" font-medium hover:text-[#184d2e] transition-colors">Contact</a></li>
+        </ul>
     </div>
 </nav>
