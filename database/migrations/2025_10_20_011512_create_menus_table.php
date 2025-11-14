@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('gambar');
             $table->string('nama');
             $table->text('deskripsi');
+            $table->timestamps(); 
             
         });
     }
