@@ -53,4 +53,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Keranjang::class);
     }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

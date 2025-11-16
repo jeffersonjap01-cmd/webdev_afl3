@@ -26,7 +26,10 @@
                              class="w-full h-64 object-cover">
                         <div class="p-4 text-left">
                             <h5 class="text-lg font-semibold mb-2">{{ $menu->nama }}</h5>
-                            <p class="text-gray-700 text-sm">{{ $menu->deskripsi }}</p>
+                            <p class="text-gray-700 text-sm mb-2">{{ $menu->deskripsi }}</p>
+                            <p class="text-green-700 font-bold text-lg">
+                                Rp {{ number_format($menu->harga ?? 0, 0, ',', '.') }}
+                            </p>
                         </div>
                     </div>
                 @endforeach
