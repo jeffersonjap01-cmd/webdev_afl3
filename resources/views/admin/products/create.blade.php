@@ -70,6 +70,23 @@
                             @enderror
                         </div>
 
+                        {{-- Stok --}}
+                        <div>
+                            <label for="stok" class="block text-gray-700 font-medium mb-2">
+                                Stok <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                   id="stok" 
+                                   name="stok" 
+                                   value="{{ old('stok', 0) }}"
+                                   min="0"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('stok') border-red-500 @enderror">
+                            @error('stok')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Gambar --}}
                         <div>
                             <label for="gambar" class="block text-gray-700 font-medium mb-2">
@@ -104,4 +121,5 @@
         </div>
     </section>
 @endsection
+
 

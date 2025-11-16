@@ -7,7 +7,7 @@
             <li><a href="/" class="font-medium hover:text-[#184d2e] transition-colors">Home</a></li>
             <li><a href="<?php echo e(route('products')); ?>" class="font-medium hover:text-[#184d2e] transition-colors">Products</a></li>
             <li><a href="<?php echo e(route('about')); ?>" class="font-medium hover:text-[#184d2e] transition-colors">About</a></li>
-            <li><a href="<?php echo e(route('contact')); ?>" class="font-medium hover:text-[#184d2e] transition-colors">Contact</a></li>
+            <li><a href="<?php echo e(route('review')); ?>" class="font-medium hover:text-[#184d2e] transition-colors">Review</a></li>
 
             <?php if(auth()->guard()->guest()): ?>
                 
@@ -17,31 +17,76 @@
             <?php if(auth()->guard()->check()): ?>
             
             <?php if(auth()->user()->role === 'admin'): ?>
+                
                 <li>
                     <a href="<?php echo e(route('admin.products.index')); ?>" 
                        class="font-medium hover:text-[#184d2e] transition-colors">
                         <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
-                        Admin
+                        Products
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo e(route('admin.orders.index')); ?>" 
+                       class="font-medium hover:text-[#184d2e] transition-colors">
+                        <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Orders
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo e(route('admin.deliveries.index')); ?>" 
+                       class="font-medium hover:text-[#184d2e] transition-colors">
+                        <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        Deliveries
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo e(route('admin.promos.index')); ?>" 
+                       class="font-medium hover:text-[#184d2e] transition-colors">
+                        <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Promos
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo e(route('user.profile')); ?>" 
+                       class="font-medium hover:text-[#184d2e] transition-colors">
+                        Profile
+                    </a>
+                </li>
+            <?php else: ?>
+                
+                <li>
+                    <a href="<?php echo e(route('keranjang.index')); ?>" 
+                       class="font-medium hover:text-[#184d2e] transition-colors relative">
+                        <svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="ml-1">Keranjang</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo e(route('orders.index')); ?>" 
+                       class="font-medium hover:text-[#184d2e] transition-colors">
+                        <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Order
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo e(route('user.profile')); ?>" 
+                       class="font-medium hover:text-[#184d2e] transition-colors">
+                        Profile
                     </a>
                 </li>
             <?php endif; ?>
-            <li>
-                <a href="<?php echo e(route('keranjang.index')); ?>" 
-                   class="font-medium hover:text-[#184d2e] transition-colors relative">
-                    <svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    <span class="ml-1">Keranjang</span>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo e(route('user.profile')); ?>" 
-                   class="font-medium hover:text-[#184d2e] transition-colors">
-                Profile
-                </a>
-            </li>
         
             <li>
                 <form method="POST" action="<?php echo e(route('logout')); ?>">

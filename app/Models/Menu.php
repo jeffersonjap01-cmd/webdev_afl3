@@ -15,7 +15,9 @@ class Menu extends Model
         'nama',
         'deskripsi',
         'harga',
-        'stok'
+        'stok',
+        'kategori_id',
+        'lokasi_toko_id'
     ];
 
     public $timestamps = false;
@@ -30,4 +32,18 @@ class Menu extends Model
         return $this->belongsTo(LokasiToko::class);
     }
 
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }

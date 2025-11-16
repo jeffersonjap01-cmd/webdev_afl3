@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Beranda - Matcha Website'); ?>
 
 <?php $__env->startSection('content'); ?>

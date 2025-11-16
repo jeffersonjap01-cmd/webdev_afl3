@@ -19,5 +19,10 @@ class Meja extends Model
     {
         return $this->belongsTo(LokasiToko::class);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
 

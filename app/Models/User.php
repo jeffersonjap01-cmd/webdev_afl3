@@ -54,6 +54,16 @@ class User extends Authenticatable
         return $this->hasMany(Keranjang::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     /**
      * Check if user is admin
      */

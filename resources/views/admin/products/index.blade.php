@@ -46,6 +46,7 @@
                                     <th class="px-6 py-4 text-left font-semibold">Nama</th>
                                     <th class="px-6 py-4 text-left font-semibold">Deskripsi</th>
                                     <th class="px-6 py-4 text-center font-semibold">Harga</th>
+                                    <th class="px-6 py-4 text-center font-semibold">Stok</th>
                                     <th class="px-6 py-4 text-center font-semibold">Aksi</th>
                                 </tr>
                             </thead>
@@ -67,6 +68,21 @@
                                             <span class="text-green-700 font-semibold">
                                                 Rp {{ number_format($menu->harga, 0, ',', '.') }}
                                             </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <form action="{{ route('admin.products.updateStock', $menu->id) }}" method="POST" class="inline-flex items-center gap-2">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="number" 
+                                                       name="stok" 
+                                                       value="{{ $menu->stok ?? 0 }}" 
+                                                       min="0"
+                                                       class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-center">
+                                                <button type="submit" 
+                                                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium">
+                                                    Update
+                                                </button>
+                                            </form>
                                         </td>
                                         <td class="px-6 py-4 text-center">
                                             <div class="flex items-center justify-center gap-2">
@@ -109,4 +125,5 @@
         </div>
     </section>
 @endsection
+
 

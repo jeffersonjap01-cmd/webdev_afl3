@@ -57,32 +57,105 @@
                                 Rp {{ number_format($menu->harga ?? 0, 0, ',', '.') }}
                             </p>
 
-                            {{-- Add to Cart Form --}}
+                            {{-- Stock Display --}}
+                            <div class="mb-4">
+                                <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold {{ ($menu->stok ?? 0) > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    Stok: {{ $menu->stok ?? 0 }}
+                                </span>
+                            </div>
+
+                            {{-- Order Options --}}
                             @auth
-                                <form action="{{ route('keranjang.store') }}" method="POST" class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                                    @csrf
-                                    <input type="hidden" name="menu_id" value="{{ $menu->id }}">
-                                    
-                                    <div class="flex items-center gap-2">
+                                @if(($menu->stok ?? 0) <= 0)
+                                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                        <p class="text-red-800 font-semibold">
+                                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                            </svg>
+                                            Produk ini sedang habis stok.
+                                        </p>
+                                    </div>
+                                @else
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-2 mb-3">
                                         <label for="qty_{{ $menu->id }}" class="text-gray-700 font-medium">Jumlah:</label>
                                         <input type="number" 
                                                id="qty_{{ $menu->id }}" 
-                                               name="qty" 
+                                               name="qty_{{ $menu->id }}"
                                                value="1" 
                                                min="1" 
                                                class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
                                     </div>
-                                    
-                                    <button type="submit" 
-                                            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-full transition-colors duration-200 shadow-md hover:shadow-lg">
-                                        <span class="flex items-center gap-2">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                            </svg>
-                                            Tambah ke Keranjang
-                                        </span>
-                                    </button>
-                                </form>
+
+                                    {{-- Delivery - Add to Cart with Lokasi Selection --}}
+                                    <form action="{{ route('keranjang.store') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                                        <input type="hidden" name="qty" id="qty_cart_{{ $menu->id }}" value="1">
+                                        
+                                        <div class="mb-3">
+                                            <label for="lokasi_delivery_{{ $menu->id }}" class="block text-gray-700 font-medium text-sm mb-2">
+                                                Pilih Lokasi Cabang:
+                                            </label>
+                                            <select name="lokasi_toko_id" 
+                                                    id="lokasi_delivery_{{ $menu->id }}"
+                                                    required
+                                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <option value="">-- Pilih Lokasi --</option>
+                                                @php
+                                                    $lokasiToko = \App\Models\LokasiToko::all();
+                                                @endphp
+                                                @foreach($lokasiToko as $lokasi)
+                                                    <option value="{{ $lokasi->id }}">{{ $lokasi->nama_lokasi }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="alamat_delivery_{{ $menu->id }}" class="block text-gray-700 font-medium text-sm mb-2">
+                                                Alamat Pengiriman:
+                                            </label>
+                                            <textarea name="alamat_lengkap" 
+                                                      id="alamat_delivery_{{ $menu->id }}"
+                                                      required
+                                                      rows="3"
+                                                      placeholder="Masukkan alamat lengkap pengiriman"
+                                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                            <div class="mt-2 grid grid-cols-2 gap-2">
+                                                <input type="text" 
+                                                       name="kota" 
+                                                       placeholder="Kota"
+                                                       required
+                                                       class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <input type="text" 
+                                                       name="provinsi" 
+                                                       placeholder="Provinsi"
+                                                       required
+                                                       class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            </div>
+                                            <input type="text" 
+                                                   name="kode_pos" 
+                                                   placeholder="Kode Pos (Opsional)"
+                                                   class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <input type="text" 
+                                                   name="no_telepon" 
+                                                   placeholder="No. Telepon (Opsional)"
+                                                   class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                        
+                                        <button type="submit" 
+                                                onclick="document.getElementById('qty_cart_{{ $menu->id }}').value = document.getElementById('qty_{{ $menu->id }}').value"
+                                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full transition-colors duration-200 shadow-md hover:shadow-lg">
+                                            <span class="flex items-center justify-center gap-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                </svg>
+                                                Add to Cart (Delivery)
+                                            </span>
+                                        </button>
+                                    </form>
+                                </div>
+                                @endif
                             @else
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                                     <p class="text-yellow-800 mb-2">
@@ -99,4 +172,5 @@
             @endforeach
         </div>
     </section>
+
 @endsection

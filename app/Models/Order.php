@@ -13,6 +13,7 @@ class Order extends Model
         'user_id',
         'meja_id',
         'status',
+        'status_pembayaran',
         'last_activity_at'
     ];
 
@@ -44,5 +45,10 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
     }
 }

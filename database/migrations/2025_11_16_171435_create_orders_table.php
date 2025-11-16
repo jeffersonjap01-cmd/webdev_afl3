@@ -21,6 +21,9 @@ return new class extends Migration
             $table->enum('status', ['pending', 'proses', 'paid', 'done'])
                 ->default('pending');
 
+            // Status pembayaran
+            $table->enum('status_pembayaran', ['Belum Bayar', 'Dibayar'])->default('Belum Bayar')->after('status');
+
             // Waktu aktivitas terakhir (dipakai untuk auto-release)
             $table->timestamp('last_activity_at')->nullable();
 

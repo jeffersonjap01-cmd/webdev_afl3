@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Menu;
+use App\Models\LokasiToko;
 
 class Keranjang extends Model
 {
@@ -14,8 +15,11 @@ class Keranjang extends Model
     protected $fillable = [
         'user_id',
         'menu_id',
+        'lokasi_toko_id',
+        'alamat_id',
         'qty',
         'total_harga',
+        'status_pembayaran',
     ];
 
     public function user()
@@ -26,5 +30,15 @@ class Keranjang extends Model
     public function menu()
     {
         return $this->belongsTo(Menu::class);
+    }
+
+    public function lokasiToko()
+    {
+        return $this->belongsTo(LokasiToko::class);
+    }
+
+    public function alamat()
+    {
+        return $this->belongsTo(Alamat::class);
     }
 }

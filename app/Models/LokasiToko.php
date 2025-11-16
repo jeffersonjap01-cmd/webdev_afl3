@@ -20,4 +20,10 @@ class LokasiToko extends Model
     {
         return $this->hasMany(Menu::class);
     }
+
+    // Relasi ke Meja
+    public function mejas()
+    {
+        return $this->hasMany(Meja::class);
+    }
 }

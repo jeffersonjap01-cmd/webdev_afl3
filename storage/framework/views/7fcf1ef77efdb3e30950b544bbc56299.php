@@ -44,6 +44,7 @@
                                     <th class="px-6 py-4 text-left font-semibold">Nama</th>
                                     <th class="px-6 py-4 text-left font-semibold">Deskripsi</th>
                                     <th class="px-6 py-4 text-center font-semibold">Harga</th>
+                                    <th class="px-6 py-4 text-center font-semibold">Stok</th>
                                     <th class="px-6 py-4 text-center font-semibold">Aksi</th>
                                 </tr>
                             </thead>
@@ -66,6 +67,21 @@
                                                 Rp <?php echo e(number_format($menu->harga, 0, ',', '.')); ?>
 
                                             </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <form action="<?php echo e(route('admin.products.updateStock', $menu->id)); ?>" method="POST" class="inline-flex items-center gap-2">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('PUT'); ?>
+                                                <input type="number" 
+                                                       name="stok" 
+                                                       value="<?php echo e($menu->stok ?? 0); ?>" 
+                                                       min="0"
+                                                       class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-center">
+                                                <button type="submit" 
+                                                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium">
+                                                    Update
+                                                </button>
+                                            </form>
                                         </td>
                                         <td class="px-6 py-4 text-center">
                                             <div class="flex items-center justify-center gap-2">
@@ -108,6 +124,7 @@
         </div>
     </section>
 <?php $__env->stopSection(); ?>
+
 
 
 <?php echo $__env->make('layouts.mainlayout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /Users/jj/Herd/webdev_afl3-1/resources/views/admin/products/index.blade.php ENDPATH**/ ?>

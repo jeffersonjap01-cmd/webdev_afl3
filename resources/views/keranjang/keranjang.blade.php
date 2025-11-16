@@ -13,7 +13,7 @@
     @endif
 
     {{-- Error Message --}}
-    @if($errors->any())
+    @if(isset($errors) && $errors->any())
         <div class="max-w-6xl mx-auto px-4 mt-4">
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <ul class="list-disc list-inside">
@@ -21,6 +21,14 @@
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="max-w-6xl mx-auto px-4 mt-4">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                {{ session('error') }}
             </div>
         </div>
     @endif
@@ -48,6 +56,7 @@
                                     <th class="px-6 py-4 text-center font-semibold">Harga Satuan</th>
                                     <th class="px-6 py-4 text-center font-semibold">Jumlah</th>
                                     <th class="px-6 py-4 text-center font-semibold">Total Harga</th>
+                                    <th class="px-6 py-4 text-center font-semibold">Status</th>
                                     <th class="px-6 py-4 text-center font-semibold">Aksi</th>
                                 </tr>
                             </thead>
@@ -56,9 +65,11 @@
                                     $grandTotal = 0;
                                 @endphp
                                 @foreach($keranjang as $item)
-                                    @php
-                                        $grandTotal += $item->total_harga;
-                                    @endphp
+                                    @if($item->status_pembayaran === 'Belum Bayar')
+                                        @php
+                                            $grandTotal += $item->total_harga;
+                                        @endphp
+                                    @endif
                                     <tr class="hover:bg-green-50 transition-colors">
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-4">
@@ -68,6 +79,15 @@
                                                 <div>
                                                     <h3 class="font-semibold text-green-800 text-lg">{{ $item->menu->nama }}</h3>
                                                     <p class="text-gray-600 text-sm">{{ $item->menu->deskripsi }}</p>
+                                                    @if($item->lokasiToko)
+                                                        <p class="text-blue-600 text-xs mt-1">
+                                                            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                            </svg>
+                                                            {{ $item->lokasiToko->nama_lokasi }}
+                                                        </p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -117,6 +137,11 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center">
+                                            <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $item->status_pembayaran === 'Dibayar' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ $item->status_pembayaran ?? 'Belum Bayar' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
                                             <form action="{{ route('keranjang.destroy', $item->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -135,7 +160,7 @@
                             </tbody>
                             <tfoot class="bg-green-50">
                                 <tr>
-                                    <td colspan="3" class="px-6 py-4 text-right font-bold text-lg text-green-800">
+                                    <td colspan="4" class="px-6 py-4 text-right font-bold text-lg text-green-800">
                                         Total Keseluruhan:
                                     </td>
                                     <td colspan="2" class="px-6 py-4 text-center">
@@ -149,12 +174,83 @@
                     </div>
                 </div>
 
-                {{-- Checkout Button --}}
-                <div class="mt-6 text-center">
-                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-full transition-colors duration-200 shadow-lg hover:shadow-xl text-lg">
-                        Checkout
-                    </button>
+                {{-- Payment Section (Only for unpaid items) --}}
+                @if($keranjang->where('status_pembayaran', 'Belum Bayar')->count() > 0)
+                <div class="mt-6 bg-white rounded-2xl shadow-md p-8">
+                    <h2 class="text-2xl font-bold text-green-800 mb-6">Pembayaran</h2>
+                    
+                    {{-- Promo Code --}}
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-medium mb-2">Kode Promo (Opsional)</label>
+                        <form action="{{ route('promo.apply') }}" method="POST" class="flex gap-2">
+                            @csrf
+                            <input type="text" 
+                                   name="kode_promo" 
+                                   placeholder="Masukkan kode promo"
+                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <button type="submit" 
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                                Terapkan
+                            </button>
+                        </form>
+                        @if(session('promo_applied'))
+                            @php $promo = session('promo_applied'); @endphp
+                            <div class="mt-2 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded">
+                                Promo diterapkan: {{ $promo->nama_promo }}
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Payment Form --}}
+                    <form action="{{ route('payment.cart') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @if(session('promo_applied'))
+                            <input type="hidden" name="promo_id" value="{{ session('promo_applied')->id }}">
+                        @endif
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2">Metode Pembayaran</label>
+                            <select name="metode_pembayaran" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option value="tunai">Tunai</option>
+                                <option value="debit">Debit</option>
+                                <option value="kredit">Kredit</option>
+                                <option value="e_wallet">E-Wallet</option>
+                                <option value="qris">QRIS</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2">Bukti Pembayaran (Opsional)</label>
+                            <input type="file" 
+                                   name="bukti_pembayaran" 
+                                   accept="image/*"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2">Catatan (Opsional)</label>
+                            <textarea name="catatan" 
+                                      rows="3"
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+                        </div>
+
+                        <div class="mb-6 p-4 bg-green-50 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <span class="text-lg font-semibold text-green-800">Total Pembayaran:</span>
+                                <span class="text-2xl font-bold text-green-700">
+                                    Rp {{ number_format($grandTotal, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-lg">
+                            Bayar Sekarang
+                        </button>
+                    </form>
                 </div>
+                @endif
             @else
                 {{-- Empty Cart --}}
                 <div class="bg-white rounded-2xl shadow-md p-12 text-center">

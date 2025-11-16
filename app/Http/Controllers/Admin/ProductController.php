@@ -35,6 +35,7 @@ class ProductController extends Controller
             'nama' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -45,6 +46,7 @@ class ProductController extends Controller
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
+            'stok' => $request->stok ?? 0,
             'gambar' => $imageName,
         ]);
 
@@ -80,6 +82,7 @@ class ProductController extends Controller
             'nama' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -87,6 +90,7 @@ class ProductController extends Controller
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
+            'stok' => $request->stok ?? 0,
         ];
 
         if ($request->hasFile('gambar')) {
@@ -122,5 +126,21 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil dihapus!');
+    }
+
+    /**
+     * Update stock only
+     */
+    public function updateStock(Request $request, string $id)
+    {
+        $product = Menu::findOrFail($id);
+        $request->validate([
+            'stok' => 'required|integer|min:0',
+        ]);
+
+        $product->update(['stok' => $request->stok]);
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Stok produk berhasil diperbarui!');
     }
 }

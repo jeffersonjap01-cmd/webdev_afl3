@@ -112,6 +112,37 @@ unset($__errorArgs, $__bag); ?>
 
                         
                         <div>
+                            <label for="stok" class="block text-gray-700 font-medium mb-2">
+                                Stok <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                   id="stok" 
+                                   name="stok" 
+                                   value="<?php echo e(old('stok', 0)); ?>"
+                                   min="0"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent <?php $__errorArgs = ['stok'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                            <?php $__errorArgs = ['stok'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        
+                        <div>
                             <label for="gambar" class="block text-gray-700 font-medium mb-2">
                                 Gambar Produk <span class="text-red-500">*</span>
                             </label>
@@ -158,6 +189,7 @@ unset($__errorArgs, $__bag); ?>
         </div>
     </section>
 <?php $__env->stopSection(); ?>
+
 
 
 <?php echo $__env->make('layouts.mainlayout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /Users/jj/Herd/webdev_afl3-1/resources/views/admin/products/create.blade.php ENDPATH**/ ?>

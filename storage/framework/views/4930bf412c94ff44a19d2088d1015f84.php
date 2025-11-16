@@ -25,10 +25,18 @@
     <div class="bg-white shadow-md rounded-lg p-6 mb-8">
         <h2 class="text-xl font-semibold text-[#184d2e] mb-3">Informasi Akun</h2>
 
-        <p><strong>Nama:</strong> <?php echo e($user->name); ?></p>
-        <p><strong>Email:</strong> <?php echo e($user->email); ?></p>
-        <p><strong>Status:</strong> <span class="capitalize"><?php echo e($user->status); ?></span></p>
-        <p><strong>Dibuat pada:</strong> <?php echo e($user->created_at->format('d M Y, H:i')); ?></p>
+        <div class="space-y-2">
+            <p><strong>Nama:</strong> <?php echo e($user->name); ?></p>
+            <p><strong>Email:</strong> <?php echo e($user->email); ?></p>
+            <p>
+                <strong>Role:</strong> 
+                <span class="px-3 py-1 rounded-full text-sm font-semibold <?php echo e($user->role === 'admin' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'); ?>">
+                    <?php echo e($user->role === 'admin' ? 'Admin' : 'User'); ?>
+
+                </span>
+            </p>
+            <p><strong>Dibuat pada:</strong> <?php echo e($user->created_at->format('d M Y, H:i')); ?></p>
+        </div>
     </div>
 
     
