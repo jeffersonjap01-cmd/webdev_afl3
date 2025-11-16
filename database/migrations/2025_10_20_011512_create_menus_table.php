@@ -16,8 +16,14 @@ return new class extends Migration
             $table->string('gambar');
             $table->string('nama');
             $table->text('deskripsi');
-            $table->timestamps(); 
-            
+            $table->decimal('harga', 10, 2)->default(0);
+            $table->integer('stok')->default(0);
+            $table->timestamps();
+
+            // Relasi ke tabel lokasi / toko cabang
+            $table->foreignId('lokasi_toko_id')->constrained('lokasi_tokos');
+
+            $table->timestamps();
         });
     }
 
