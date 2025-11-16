@@ -22,7 +22,7 @@ class KeranjangController extends Controller
         return view('keranjang.index', compact('keranjang'));
         // klo blm ada view 
         //return response()->json($keranjang);
-    }
+    }   
 
     /**
      * Store a newly created resource in storage.

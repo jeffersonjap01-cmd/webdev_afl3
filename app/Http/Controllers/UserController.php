@@ -13,7 +13,7 @@ public function profile()
 {
     $user = User::findOrFail(Auth::id());
 
-    return view('user.profile', compact('user'));
+    return view('profile', compact('user'));
 }
 
     public function updateName(Request $request)

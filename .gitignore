@@ -2,7 +2,10 @@
 /vendor
 /node_modules
 /public/storage
+/public/hot
 /storage/*.key
+/storage
+/database/*.sqlite
 .env
 .env.backup
 .phpunit.result.cache

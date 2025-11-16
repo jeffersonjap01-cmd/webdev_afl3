@@ -1,47 +1,63 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.mainlayout')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@section('title', 'Login')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+@section('content')
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+<div class="flex justify-center mt-16 mb-20">
+    <div class="bg-white shadow-xl rounded-xl p-10 w-full max-w-md border-t-4 border-[#184d2e]">
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+        <h2 class="text-3xl font-bold text-center text-[#184d2e] mb-6">
+            Login to Your Account
+        </h2>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+        {{-- Session Status --}}
+        @if (session('status'))
+            <div class="mb-4 text-green-700 bg-green-100 p-2 rounded">
+                {{ session('status') }}
+            </div>
+        @endif
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+            {{-- Email --}}
+            <div class="mb-4">
+                <label class="block mb-1 font-medium">Email</label>
+                <input type="email" name="email" required autofocus
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-[#184d2e] focus:border-[#184d2e]">
+            </div>
+
+            {{-- Password --}}
+            <div class="mb-4">
+                <label class="block mb-1 font-medium">Password</label>
+                <input type="password" name="password" required
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-[#184d2e] focus:border-[#184d2e]">
+            </div>
+
+            {{-- Remember Me --}}
+            <div class="flex items-center mb-4">
+                <input id="remember_me" type="checkbox" name="remember"
+                       class="rounded focus:ring-[#184d2e] text-[#184d2e]">
+                <label for="remember_me" class="ms-2 text-sm">Remember me</label>
+            </div>
+
+            {{-- Login Button --}}
+            <button class="w-full bg-[#184d2e] hover:bg-[#21633a] text-white font-semibold py-2 rounded-lg transition">
+                Login
+            </button>
+        </form>
+
+        <div class="text-center mt-6">
+            <p class="text-sm">
+                Don't have an account? 
+                <a href="{{ route('register') }}" class="text-[#184d2e] font-semibold hover:underline">
+                    Register here
                 </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            </p>
         </div>
-    </form>
-</x-guest-layout>
+
+    </div>
+</div>
+
+@endsection

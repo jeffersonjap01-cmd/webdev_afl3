@@ -3,32 +3,100 @@
 @section('title', 'Produk - Alvca Matcha')
 
 @section('content')
-    <section class="py-5 text-center bg-light border-bottom">
-        <div class="container">
-            <h1 class="fw-bold text-success mb-3">Produk Alvca Matcha</h1>
-            <p class="text-muted mb-0">
+    {{-- Success Message --}}
+    @if(session('success'))
+        <div class="max-w-6xl mx-auto px-4 mt-4">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
+    {{-- Error Message --}}
+    @if($errors->any())
+        <div class="max-w-6xl mx-auto px-4 mt-4">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
+    {{-- Header Section --}}
+    <section class="py-8 text-center bg-gradient-to-b from-green-50 to-green-100 border-b border-green-200">
+        <div class="max-w-6xl mx-auto px-4">
+            <h1 class="text-4xl font-bold text-green-800 mb-3">Produk Alvca Matcha</h1>
+            <p class="text-gray-700 text-lg">
                 Temukan berbagai pilihan matcha terbaik — dari minuman segar hingga dessert premium.
             </p>
         </div>
     </section>
 
-    <div class="container my-5">
-        @foreach($menus as $index => $menu)
-            <div class="row align-items-center mb-5 py-4 {{ $index % 2 == 0 ? 'bg-light rounded-4 shadow-sm' : '' }}">
-                <div class="col-md-5 mb-3 mb-md-0">
-                    <img src="{{ asset('images/' . $menu->gambar) }}" 
-                         alt="{{ $menu->nama }}"
-                         class="img-fluid rounded-4 shadow-sm"
-                         style="width: 100%; height: 300px; object-fit: cover;">
+    {{-- Products Section --}}
+    <section class="my-8 py-6">
+        <div class="max-w-6xl mx-auto px-4">
+            @foreach($menus as $index => $menu)
+                <div class="mb-8 py-6 {{ $index % 2 == 0 ? 'bg-white rounded-2xl shadow-md' : 'bg-green-50 rounded-2xl shadow-sm' }}">
+                    <div class="flex flex-col md:flex-row items-center gap-6 px-6">
+                        {{-- Product Image --}}
+                        <div class="w-full md:w-2/5">
+                            <img src="{{ asset('images/' . $menu->gambar) }}" 
+                                 alt="{{ $menu->nama }}"
+                                 class="w-full h-64 md:h-80 object-cover rounded-xl shadow-lg">
+                        </div>
+                        
+                        {{-- Product Info --}}
+                        <div class="w-full md:w-3/5 text-center md:text-left">
+                            <h2 class="text-3xl font-bold text-green-800 mb-3">{{ $menu->nama }}</h2>
+                            <p class="text-gray-700 mb-4 leading-relaxed">{{ $menu->deskripsi }}</p>
+                            
+                            <p class="text-2xl font-semibold text-green-700 mb-4">
+                                Rp {{ number_format($menu->harga ?? 0, 0, ',', '.') }}
+                            </p>
+
+                            {{-- Add to Cart Form --}}
+                            @auth
+                                <form action="{{ route('keranjang.store') }}" method="POST" class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                                    @csrf
+                                    <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                                    
+                                    <div class="flex items-center gap-2">
+                                        <label for="qty_{{ $menu->id }}" class="text-gray-700 font-medium">Jumlah:</label>
+                                        <input type="number" 
+                                               id="qty_{{ $menu->id }}" 
+                                               name="qty" 
+                                               value="1" 
+                                               min="1" 
+                                               class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    </div>
+                                    
+                                    <button type="submit" 
+                                            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-full transition-colors duration-200 shadow-md hover:shadow-lg">
+                                        <span class="flex items-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                            </svg>
+                                            Tambah ke Keranjang
+                                        </span>
+                                    </button>
+                                </form>
+                            @else
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <p class="text-yellow-800 mb-2">
+                                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                        Silakan <a href="{{ route('login') }}" class="text-green-600 hover:text-green-700 font-semibold underline">login</a> untuk menambahkan produk ke keranjang.
+                                    </p>
+                                </div>
+                            @endauth
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-7">
-                    <h2 class="fw-bold text-success mb-3">{{ $menu->nama }}</h2>
-                    <p class="text-muted mb-4">{{ $menu->deskripsi }}</p>
-                    <a href="#" class="btn btn-success px-4 py-2 rounded-pill">
-                        <i class="bi bi-cart-plus me-2"></i> Tambah ke Keranjang
-                    </a>
-                </div>
-            </div>
-        @endforeach
-    </div>
+            @endforeach
+        </div>
+    </section>
 @endsection
