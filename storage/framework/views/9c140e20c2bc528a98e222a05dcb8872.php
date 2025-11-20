@@ -87,4 +87,10 @@
 
 
 
+
+
+
+
+
+
 <?php echo $__env->make('layouts.mainlayout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /Users/jj/Herd/webdev_afl3-1/resources/views/about.blade.php ENDPATH**/ ?>

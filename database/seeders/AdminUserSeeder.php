@@ -21,16 +21,19 @@ class AdminUserSeeder extends Seeder
             User::create([
                 'name' => 'Admin',
                 'email' => 'admin@alvcamatcha.com',
-                'password' => Hash::make('admin123'),
+                'password' => Hash::make('12345678'),
                 'role' => 'admin',
                 'email_verified_at' => now(),
             ]);
-            
-            $this->command->info('Admin user created successfully!');
-            $this->command->info('Email: admin@alvcamatcha.com');
-            $this->command->info('Password: admin123');
+            if ($this->command) {
+                $this->command->info('Admin user created successfully!');
+                $this->command->info('Email: admin@alvcamatcha.com');
+                $this->command->info('Password: 12345678');
+            }
         } else {
-            $this->command->info('Admin user already exists!');
+            if ($this->command) {
+                $this->command->info('Admin user already exists!');
+            }
         }
     }
 }

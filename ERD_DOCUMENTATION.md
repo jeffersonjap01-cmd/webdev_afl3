@@ -376,3 +376,6 @@ The ERD can be visualized in draw.io using the following structure:
 **Document Version**: 1.0  
 **Last Updated**: November 2025
 
+
+
+

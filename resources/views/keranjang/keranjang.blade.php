@@ -98,37 +98,57 @@
                                         </td>
                                         <td class="px-6 py-4 text-center">
                                             <div class="flex items-center justify-center gap-2">
-                                                {{-- Decrease Button --}}
-                                                <form action="{{ route('keranjang.update', $item->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <input type="hidden" name="qty" value="{{ max(1, $item->qty - 1) }}">
-                                                    <button type="submit" 
-                                                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold w-10 h-10 rounded-lg transition-colors duration-200 flex items-center justify-center {{ $item->qty <= 1 ? 'opacity-50 cursor-not-allowed' : '' }}"
-                                                            {{ $item->qty <= 1 ? 'disabled' : '' }}>
+                                                @if($item->status_pembayaran === 'Belum Bayar')
+                                                    {{-- Decrease Button --}}
+                                                    <form action="{{ route('keranjang.update', $item->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="qty" value="{{ max(1, $item->qty - 1) }}">
+                                                        <button type="submit" 
+                                                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold w-10 h-10 rounded-lg transition-colors duration-200 flex items-center justify-center {{ $item->qty <= 1 ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                                                {{ $item->qty <= 1 ? 'disabled' : '' }}>
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <button type="button"
+                                                            class="bg-gray-100 text-gray-400 font-bold w-10 h-10 rounded-lg cursor-not-allowed"
+                                                            disabled>
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
                                                         </svg>
                                                     </button>
-                                                </form>
+                                                @endif
                                                 
                                                 {{-- Quantity Display --}}
                                                 <span class="w-16 text-center font-semibold text-lg text-gray-800">
                                                     {{ $item->qty }}
                                                 </span>
                                                 
-                                                {{-- Increase Button --}}
-                                                <form action="{{ route('keranjang.update', $item->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <input type="hidden" name="qty" value="{{ $item->qty + 1 }}">
-                                                    <button type="submit" 
-                                                            class="bg-green-500 hover:bg-green-600 text-white font-bold w-10 h-10 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                                @if($item->status_pembayaran === 'Belum Bayar')
+                                                    {{-- Increase Button --}}
+                                                    <form action="{{ route('keranjang.update', $item->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="qty" value="{{ $item->qty + 1 }}">
+                                                        <button type="submit" 
+                                                                class="bg-green-500 hover:bg-green-600 text-white font-bold w-10 h-10 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <button type="button"
+                                                            class="bg-gray-100 text-gray-400 font-bold w-10 h-10 rounded-lg cursor-not-allowed"
+                                                            disabled>
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                                         </svg>
                                                     </button>
-                                                </form>
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-center">
@@ -176,9 +196,39 @@
 
                 {{-- Payment Section (Only for unpaid items) --}}
                 @if($keranjang->where('status_pembayaran', 'Belum Bayar')->count() > 0)
+                @php
+                    $activeOrderType = old('order_type', $defaultOrderType);
+                    $firstItem = $keranjang->first();
+                    $existingLokasiId = $firstItem->lokasi_toko_id ?? null;
+                    $existingAlamat = $firstItem->alamat ?? null;
+                    $existingMejaId = $firstItem->meja_id ?? null;
+                    $prefilledDeliveryLokasi = old('delivery_lokasi_toko_id', $activeOrderType === 'delivery' ? $existingLokasiId : null);
+                    $prefilledDineInLokasi = old('dine_in_lokasi_toko_id', $activeOrderType === 'dine_in' ? $existingLokasiId : null);
+                    $prefilledMejaId = old('meja_id', $activeOrderType === 'dine_in' ? $existingMejaId : null);
+                @endphp
                 <div class="mt-6 bg-white rounded-2xl shadow-md p-8">
                     <h2 class="text-2xl font-bold text-green-800 mb-6">Pembayaran</h2>
                     
+                    {{-- Fulfillment Navigation --}}
+                    <div class="mb-6">
+                        <p class="text-gray-700 font-medium mb-2">Pilih Metode Pemenuhan Pesanan</p>
+                        <div class="flex gap-4">
+                            <button type="button"
+                                    class="order-type-tab flex-1 px-4 py-3 rounded-lg border text-center font-semibold transition-colors {{ $activeOrderType === 'delivery' ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-700 border-gray-300' }}"
+                                    data-order-type="delivery">
+                                Delivery
+                            </button>
+                            <button type="button"
+                                    class="order-type-tab flex-1 px-4 py-3 rounded-lg border text-center font-semibold transition-colors {{ $activeOrderType === 'dine_in' ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-700 border-gray-300' }}"
+                                    data-order-type="dine_in">
+                                Dine In
+                            </button>
+                        </div>
+                        @error('order_type')
+                            <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     {{-- Promo Code --}}
                     <div class="mb-6">
                         <label class="block text-gray-700 font-medium mb-2">Kode Promo (Opsional)</label>
@@ -193,62 +243,270 @@
                                 Terapkan
                             </button>
                         </form>
-                        @if(session('promo_applied'))
-                            @php $promo = session('promo_applied'); @endphp
-                            <div class="mt-2 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded">
-                                Promo diterapkan: {{ $promo->nama_promo }}
+                        @if($promoApplied)
+                            <div class="mt-2 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded flex items-center justify-between">
+                                <span>Promo diterapkan: {{ $promoApplied->nama_promo }}</span>
+                                @if($promoDiscount > 0)
+                                    <span class="font-semibold">- Rp {{ number_format($promoDiscount, 0, ',', '.') }}</span>
+                                @endif
                             </div>
                         @endif
                     </div>
 
-                    {{-- Payment Form --}}
-                    <form action="{{ route('payment.cart') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @if(session('promo_applied'))
-                            <input type="hidden" name="promo_id" value="{{ session('promo_applied')->id }}">
-                        @endif
+                    {{-- Payment Forms --}}
+                    <div id="deliveryFormWrapper" class="{{ $activeOrderType === 'delivery' ? '' : 'hidden' }}">
+                        <form action="{{ route('payment.cart') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                            @csrf
+                            <input type="hidden" name="order_type" value="delivery">
+                            @if($promoApplied)
+                                <input type="hidden" name="promo_id" value="{{ $promoApplied->id }}">
+                            @endif
 
-                        <div class="mb-4">
-                            <label class="block text-gray-700 font-medium mb-2">Metode Pembayaran</label>
-                            <select name="metode_pembayaran" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                                <option value="tunai">Tunai</option>
-                                <option value="debit">Debit</option>
-                                <option value="kredit">Kredit</option>
-                                <option value="e_wallet">E-Wallet</option>
-                                <option value="qris">QRIS</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-gray-700 font-medium mb-2">Bukti Pembayaran (Opsional)</label>
-                            <input type="file" 
-                                   name="bukti_pembayaran" 
-                                   accept="image/*"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-gray-700 font-medium mb-2">Catatan (Opsional)</label>
-                            <textarea name="catatan" 
-                                      rows="3"
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
-                        </div>
-
-                        <div class="mb-6 p-4 bg-green-50 rounded-lg">
-                            <div class="flex justify-between items-center">
-                                <span class="text-lg font-semibold text-green-800">Total Pembayaran:</span>
-                                <span class="text-2xl font-bold text-green-700">
-                                    Rp {{ number_format($grandTotal, 0, ',', '.') }}
-                                </span>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Pilih Cabang Pengiriman</label>
+                                <select name="delivery_lokasi_toko_id"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="">-- Pilih Lokasi --</option>
+                                    @foreach($lokasiTokos as $lokasi)
+                                        <option value="{{ $lokasi->id }}" {{ $prefilledDeliveryLokasi == $lokasi->id ? 'selected' : '' }}>
+                                            {{ $lokasi->nama_lokasi }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('delivery_lokasi_toko_id')
+                                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                                @enderror
                             </div>
-                        </div>
 
-                        <button type="submit" 
-                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-lg">
-                            Bayar Sekarang
-                        </button>
-                    </form>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Alamat Pengiriman</label>
+                                <textarea name="delivery_alamat_lengkap"
+                                          rows="3"
+                                          placeholder="Masukkan alamat lengkap pengiriman"
+                                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">{{ old('delivery_alamat_lengkap', $activeOrderType === 'delivery' ? ($existingAlamat->alamat_lengkap ?? '') : '') }}</textarea>
+                                @error('delivery_alamat_lengkap')
+                                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                                @enderror
+                                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <input type="text"
+                                           name="delivery_kota"
+                                           placeholder="Kota"
+                                           value="{{ old('delivery_kota', $activeOrderType === 'delivery' ? ($existingAlamat->kota ?? '') : '') }}"
+                                           class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <input type="text"
+                                           name="delivery_provinsi"
+                                           placeholder="Provinsi"
+                                           value="{{ old('delivery_provinsi', $activeOrderType === 'delivery' ? ($existingAlamat->provinsi ?? '') : '') }}"
+                                           class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                </div>
+                                <input type="text"
+                                       name="delivery_kode_pos"
+                                       placeholder="Kode Pos (Opsional)"
+                                       value="{{ old('delivery_kode_pos', $activeOrderType === 'delivery' ? ($existingAlamat->kode_pos ?? '') : '') }}"
+                                       class="mt-3 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <input type="text"
+                                       name="delivery_no_telepon"
+                                       placeholder="No. Telepon (Opsional)"
+                                       value="{{ old('delivery_no_telepon', $activeOrderType === 'delivery' ? ($existingAlamat->no_telepon ?? '') : '') }}"
+                                       class="mt-3 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                @error('delivery_kota')
+                                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                                @enderror
+                                @error('delivery_provinsi')
+                                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Metode Pembayaran</label>
+                                <select name="metode_pembayaran" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="tunai">Tunai</option>
+                                    <option value="debit">Debit</option>
+                                    <option value="kredit">Kredit</option>
+                                    <option value="e_wallet">E-Wallet</option>
+                                    <option value="qris">QRIS</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Bukti Pembayaran <span class="text-red-500">*</span></label>
+                                <input type="file" 
+                                       name="bukti_pembayaran" 
+                                       accept="image/*"
+                                       required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Catatan (Opsional)</label>
+                                <textarea name="catatan" 
+                                          rows="3"
+                                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">{{ old('catatan') }}</textarea>
+                            </div>
+
+                            <div class="p-4 bg-green-50 rounded-lg space-y-2">
+                                <div class="flex justify-between text-sm text-gray-600">
+                                    <span>Subtotal</span>
+                                    <span>Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
+                                </div>
+                                @if($promoDiscount > 0)
+                                    <div class="flex justify-between text-sm text-green-700">
+                                        <span>Diskon {{ $promoApplied->nama_promo ?? '' }}</span>
+                                        <span>- Rp {{ number_format($promoDiscount, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-semibold text-green-800">Total Pembayaran:</span>
+                                    <span class="text-2xl font-bold text-green-700">
+                                        Rp {{ number_format($payableTotal, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-lg">
+                                Bayar Delivery
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="dineInFormWrapper" class="{{ $activeOrderType === 'dine_in' ? '' : 'hidden' }}">
+                        <form action="{{ route('payment.cart') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                            @csrf
+                            <input type="hidden" name="order_type" value="dine_in">
+                            @if($promoApplied)
+                                <input type="hidden" name="promo_id" value="{{ $promoApplied->id }}">
+                            @endif
+
+                            <input type="hidden" name="dine_in_lokasi_toko_id" id="dineInLokasiInput" value="{{ $prefilledDineInLokasi }}">
+
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Pilih Cabang Dine In</label>
+                                <div class="flex flex-wrap gap-3" id="dineInLocationButtons">
+                                    @forelse($lokasiTokos as $lokasi)
+                                        <button type="button"
+                                                data-dine-in-location="{{ $lokasi->id }}"
+                                                class="dine-in-location-btn flex-1 min-w-[200px] px-4 py-3 rounded-xl border text-left transition-all {{ $prefilledDineInLokasi == $lokasi->id ? 'bg-green-600 text-white border-green-600 shadow-lg' : 'bg-white text-gray-700 border-gray-300 hover:border-green-500 hover:shadow' }}">
+                                            <span class="block font-semibold text-base">{{ $lokasi->nama_lokasi }}</span>
+                                            <span class="block text-xs {{ $prefilledDineInLokasi == $lokasi->id ? 'text-green-50' : 'text-gray-500' }}">
+                                                {{ $lokasi->alamat ?? 'Alamat belum tersedia' }}
+                                            </span>
+                                        </button>
+                                    @empty
+                                        <p class="text-sm text-gray-500">Belum ada cabang dine-in yang tersedia.</p>
+                                    @endforelse
+                                </div>
+                                @error('dine_in_lokasi_toko_id')
+                                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="space-y-4" id="dineInTablesWrapper">
+                                <div id="dineInPlaceholder" class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-600 {{ $prefilledDineInLokasi ? 'hidden' : '' }}">
+                                    Pilih cabang terlebih dahulu untuk melihat daftar meja yang tersedia.
+                                </div>
+
+                                @foreach($lokasiTokos as $lokasi)
+                                    <div class="dine-in-table-group rounded-2xl border border-gray-200 p-5 {{ $prefilledDineInLokasi == $lokasi->id ? '' : 'hidden' }}"
+                                         data-dine-in-table-group="{{ $lokasi->id }}">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <div>
+                                                <p class="text-sm text-gray-500">Meja tersedia di</p>
+                                                <h4 class="text-lg font-semibold text-green-800">{{ $lokasi->nama_lokasi }}</h4>
+                                            </div>
+                                            <span class="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700">
+                                                {{ $lokasi->mejas->count() }} meja
+                                            </span>
+                                        </div>
+
+                                        @if($lokasi->mejas->count() > 0)
+                                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                                @foreach($lokasi->mejas as $meja)
+                                                    <div>
+                                                        <input type="radio"
+                                                               name="meja_id"
+                                                               value="{{ $meja->id }}"
+                                                               id="meja_option_{{ $meja->id }}"
+                                                               class="hidden peer dine-in-table-radio"
+                                                               data-lokasi="{{ $lokasi->id }}"
+                                                               {{ $prefilledMejaId == $meja->id ? 'checked' : '' }}>
+                                                        <label for="meja_option_{{ $meja->id }}"
+                                                               class="block rounded-xl border border-gray-200 px-4 py-3 cursor-pointer transition-all hover:border-green-500 hover:shadow peer-checked:border-green-600 peer-checked:bg-green-50 peer-checked:shadow-lg"
+                                                               data-lokasi="{{ $lokasi->id }}">
+                                                            <span class="block text-base font-semibold text-gray-800">Meja {{ $meja->nomor_meja }}</span>
+                                                            <span class="text-xs text-gray-500 peer-checked:text-green-700">Klik untuk memilih</span>
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-sm text-gray-500">Belum ada meja yang tersedia untuk cabang ini.</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                            @error('meja_id')
+                                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                            @enderror
+                            @if($lokasiTokos->flatMap->mejas->isEmpty())
+                                <p class="text-yellow-700 text-sm mt-2">Belum ada meja yang tersedia untuk dine in.</p>
+                            @endif
+
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Metode Pembayaran</label>
+                                <select name="metode_pembayaran" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="tunai">Tunai</option>
+                                    <option value="debit">Debit</option>
+                                    <option value="kredit">Kredit</option>
+                                    <option value="e_wallet">E-Wallet</option>
+                                    <option value="qris">QRIS</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Bukti Pembayaran <span class="text-red-500">*</span></label>
+                                <input type="file" 
+                                       name="bukti_pembayaran" 
+                                       accept="image/*"
+                                       required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Catatan (Opsional)</label>
+                                <textarea name="catatan" 
+                                          rows="3"
+                                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">{{ old('catatan') }}</textarea>
+                            </div>
+
+                            <div class="p-4 bg-green-50 rounded-lg space-y-2">
+                                <div class="flex justify-between text-sm text-gray-600">
+                                    <span>Subtotal</span>
+                                    <span>Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
+                                </div>
+                                @if($promoDiscount > 0)
+                                    <div class="flex justify-between text-sm text-green-700">
+                                        <span>Diskon {{ $promoApplied->nama_promo ?? '' }}</span>
+                                        <span>- Rp {{ number_format($promoDiscount, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-semibold text-green-800">Total Pembayaran:</span>
+                                    <span class="text-2xl font-bold text-green-700">
+                                        Rp {{ number_format($payableTotal, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-lg">
+                                Bayar Dine In
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
                 @endif
             @else
@@ -266,5 +524,97 @@
             @endif
         </div>
     </section>
-@endsection
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.order-type-tab');
+            const formWrappers = {
+                delivery: document.getElementById('deliveryFormWrapper'),
+                dine_in: document.getElementById('dineInFormWrapper'),
+            };
+            let activeOrderType = @json($activeOrderType ?? 'delivery') || 'delivery';
+
+            const setOrderType = (type) => {
+                activeOrderType = type;
+                tabs.forEach((tab) => {
+                    const isActive = tab.dataset.orderType === type;
+                    tab.classList.toggle('bg-green-600', isActive);
+                    tab.classList.toggle('text-white', isActive);
+                    tab.classList.toggle('border-green-600', isActive);
+                    tab.classList.toggle('bg-white', !isActive);
+                    tab.classList.toggle('text-gray-700', !isActive);
+                    tab.classList.toggle('border-gray-300', !isActive);
+                });
+
+                Object.entries(formWrappers).forEach(([key, wrapper]) => {
+                    if (!wrapper) return;
+                    wrapper.classList.toggle('hidden', key !== type);
+                });
+            };
+
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => setOrderType(tab.dataset.orderType));
+            });
+            setOrderType(activeOrderType);
+
+            const dineInLocationInput = document.getElementById('dineInLokasiInput');
+            const dineInLocationButtons = document.querySelectorAll('.dine-in-location-btn');
+            const dineInTableGroups = document.querySelectorAll('.dine-in-table-group');
+            const dineInPlaceholder = document.getElementById('dineInPlaceholder');
+            const dineInTableRadios = document.querySelectorAll('.dine-in-table-radio');
+
+            const setActiveDineInLocation = (lokasiId) => {
+                dineInLocationButtons.forEach((button) => {
+                    const isActive = button.dataset.dineInLocation === lokasiId;
+                    button.classList.toggle('bg-green-600', isActive);
+                    button.classList.toggle('text-white', isActive);
+                    button.classList.toggle('border-green-600', isActive);
+                    button.classList.toggle('shadow-lg', isActive);
+                    button.classList.toggle('text-gray-700', !isActive);
+                    button.classList.toggle('border-gray-300', !isActive);
+                    button.classList.toggle('bg-white', !isActive);
+                    button.classList.toggle('hover:border-green-500', !isActive);
+                });
+
+                dineInTableGroups.forEach((group) => {
+                    const isMatch = lokasiId && group.dataset.dineInTableGroup === lokasiId;
+                    group.classList.toggle('hidden', !isMatch);
+                });
+
+                dineInTableRadios.forEach((radio) => {
+                    const isMatch = lokasiId && radio.dataset.lokasi === lokasiId;
+                    radio.disabled = !isMatch;
+                    if (!isMatch && radio.checked) {
+                        radio.checked = false;
+                    }
+                });
+
+                if (dineInPlaceholder) {
+                    dineInPlaceholder.classList.toggle('hidden', Boolean(lokasiId));
+                }
+            };
+
+            dineInLocationButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const lokasiId = button.dataset.dineInLocation;
+                    if (dineInLocationInput) {
+                        dineInLocationInput.value = lokasiId;
+                    }
+                    setOrderType('dine_in');
+                    setActiveDineInLocation(lokasiId);
+                });
+            });
+
+            const initialLocation = dineInLocationInput ? dineInLocationInput.value : '';
+            if (initialLocation) {
+                setActiveDineInLocation(initialLocation);
+            } else {
+                setActiveDineInLocation('');
+            }
+
+            dineInTableRadios.forEach((radio) => {
+                radio.addEventListener('change', () => setOrderType('dine_in'));
+            });
+        });
+    </script>
+@endsection

@@ -93,56 +93,6 @@
                                         <input type="hidden" name="menu_id" value="<?php echo e($menu->id); ?>">
                                         <input type="hidden" name="qty" id="qty_cart_<?php echo e($menu->id); ?>" value="1">
                                         
-                                        <div class="mb-3">
-                                            <label for="lokasi_delivery_<?php echo e($menu->id); ?>" class="block text-gray-700 font-medium text-sm mb-2">
-                                                Pilih Lokasi Cabang:
-                                            </label>
-                                            <select name="lokasi_toko_id" 
-                                                    id="lokasi_delivery_<?php echo e($menu->id); ?>"
-                                                    required
-                                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                <option value="">-- Pilih Lokasi --</option>
-                                                <?php
-                                                    $lokasiToko = \App\Models\LokasiToko::all();
-                                                ?>
-                                                <?php $__currentLoopData = $lokasiToko; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lokasi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($lokasi->id); ?>"><?php echo e($lokasi->nama_lokasi); ?></option>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label for="alamat_delivery_<?php echo e($menu->id); ?>" class="block text-gray-700 font-medium text-sm mb-2">
-                                                Alamat Pengiriman:
-                                            </label>
-                                            <textarea name="alamat_lengkap" 
-                                                      id="alamat_delivery_<?php echo e($menu->id); ?>"
-                                                      required
-                                                      rows="3"
-                                                      placeholder="Masukkan alamat lengkap pengiriman"
-                                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                                            <div class="mt-2 grid grid-cols-2 gap-2">
-                                                <input type="text" 
-                                                       name="kota" 
-                                                       placeholder="Kota"
-                                                       required
-                                                       class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                <input type="text" 
-                                                       name="provinsi" 
-                                                       placeholder="Provinsi"
-                                                       required
-                                                       class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                            </div>
-                                            <input type="text" 
-                                                   name="kode_pos" 
-                                                   placeholder="Kode Pos (Opsional)"
-                                                   class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                            <input type="text" 
-                                                   name="no_telepon" 
-                                                   placeholder="No. Telepon (Opsional)"
-                                                   class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        </div>
-                                        
                                         <button type="submit" 
                                                 onclick="document.getElementById('qty_cart_<?php echo e($menu->id); ?>').value = document.getElementById('qty_<?php echo e($menu->id); ?>').value"
                                                 class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full transition-colors duration-200 shadow-md hover:shadow-lg">
@@ -150,9 +100,12 @@
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                                 </svg>
-                                                Add to Cart (Delivery)
+                                                Tambah ke Keranjang
                                             </span>
                                         </button>
+                                        <p class="text-xs text-gray-500 mt-2">
+                                            Pilih metode pengambilan dan detail lokasi di halaman keranjang.
+                                        </p>
                                     </form>
                                 </div>
                                 <?php endif; ?>

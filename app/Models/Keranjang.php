@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Menu;
 use App\Models\LokasiToko;
+use App\Models\Alamat;
+use App\Models\Meja;
 
 class Keranjang extends Model
 {
@@ -17,9 +19,11 @@ class Keranjang extends Model
         'menu_id',
         'lokasi_toko_id',
         'alamat_id',
+        'meja_id',
         'qty',
         'total_harga',
         'status_pembayaran',
+        'order_type',
     ];
 
     public function user()
@@ -40,5 +44,10 @@ class Keranjang extends Model
     public function alamat()
     {
         return $this->belongsTo(Alamat::class);
+    }
+
+    public function meja()
+    {
+        return $this->belongsTo(Meja::class);
     }
 }

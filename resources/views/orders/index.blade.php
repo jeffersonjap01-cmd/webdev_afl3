@@ -299,10 +299,11 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2">Bukti Pembayaran (Opsional)</label>
+                        <label class="block text-gray-700 font-medium mb-2">Bukti Pembayaran <span class="text-red-500">*</span></label>
                         <input type="file" 
                                name="bukti_pembayaran" 
                                accept="image/*"
+                               required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
                     </div>
 
