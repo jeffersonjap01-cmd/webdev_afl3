@@ -15,7 +15,7 @@ class ReviewController extends Controller
         // Admins can see all reviews, users see all reviews too
         $reviews = Review::with(['user', 'menu'])
             ->latest()
-            ->paginate(10);
+            ->paginate(5);
 
         $menus = Menu::all();
 

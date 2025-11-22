@@ -18,10 +18,36 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
         ]);
 
-        // Optionally create demo customer accounts
+        // Create demo customer accounts for reviews
         \App\Models\User::factory()->create([
             'name' => 'Sample Customer',
             'email' => 'customer@example.com',
+        ]);
+
+        // Create additional customers for more diverse reviews
+        \App\Models\User::factory()->create([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Jane Smith',
+            'email' => 'jane@example.com',
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Budi Santoso',
+            'email' => 'budi@example.com',
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Sari Indah',
+            'email' => 'sari@example.com',
+        ]);
+
+        // Seed reviews after users and menus are created
+        $this->call([
+            ReviewSeeder::class,
         ]);
     }
 }

@@ -130,6 +130,68 @@
                 @else
                     <p class="text-gray-600 text-center py-8">Belum ada review.</p>
                 @endif
+
+                {{-- Pagination --}}
+                @if($reviews->hasPages())
+                    <div class="mt-8 flex items-center justify-center">
+                        <div class="flex items-center gap-2">
+                            {{-- Previous Page Link --}}
+                            @if($reviews->onFirstPage())
+                                <span class="px-3 py-2 text-gray-400 cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </span>
+                            @else
+                                <a href="{{ $reviews->previousPageUrl() }}" 
+                                   class="px-3 py-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </a>
+                            @endif
+
+                            {{-- Pagination Numbers --}}
+                            <div class="flex items-center gap-1">
+                                @foreach($reviews->getUrlRange(1, $reviews->lastPage()) as $page => $url)
+                                    @if($page == $reviews->currentPage())
+                                        <span class="px-3 py-2 bg-green-600 text-white rounded-lg font-medium">
+                                            {{ $page }}
+                                        </span>
+                                    @else
+                                        <a href="{{ $url }}" 
+                                           class="px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                                            {{ $page }}
+                                        </a>
+                                    @endif
+                                @endforeach
+                            </div>
+
+                            {{-- Next Page Link --}}
+                            @if($reviews->hasMorePages())
+                                <a href="{{ $reviews->nextPageUrl() }}" 
+                                   class="px-3 py-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            @else
+                                <span class="px-3 py-2 text-gray-400 cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Page Info --}}
+                    <div class="mt-4 text-center">
+                        <p class="text-sm text-gray-600">
+                            Menampilkan {{ $reviews->firstItem() ?? 0 }} - {{ $reviews->lastItem() ?? 0 }} dari {{ $reviews->total() }} review
+                        </p>
+                    </div>
+                @endif
             </div>
 
             {{-- Contact Information --}}

@@ -379,3 +379,7 @@ The ERD can be visualized in draw.io using the following structure:
 
 
 
+
+
+
+
